@@ -41,7 +41,7 @@ a declaração de funções de outra forma dentro de uma tag. Para facilitar o d
 ```
 
 ```javascript
-// Ruim
+// Bom
 ;(function() {
     var num1 = 1,
         num2 = 3
@@ -288,7 +288,7 @@ o padrão upper camel case (UpperCamelCase).
     var GetMultiplicationOf = function(num1, num2) {
             return num1 * num2
         }
-    var result = getMultiplicationOf(2,3)
+    var result = GetMultiplicationOf(2,3)
 
     console.log(result) // 6
 }());
