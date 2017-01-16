@@ -173,8 +173,9 @@ Caso o script demande mais de uma variável, separe suas declarações com vírg
     var name   = 'WROI + Lúcida',
         status = false
     
-    if (name.indexOf('Lúcida') > 0)
+    if (name.indexOf('Lúcida') > 0) {
         status = true
+    }
 }());
 ```
 
@@ -211,13 +212,16 @@ tratar as possíveis exceções antes de começar a executar o bloco condicional
 // Ruim
 ;(function() {
     var getDayWeekNameOf = function getDayWeekNameOf(num) {
-            if (num == 1)
+            if (num == 1) {
                 return 'domingo'
-            else if (num == 2)
+            }
+            else if (num == 2) {
                 return 'segunda'
+            }
             // (...)
-            else
+            else {
                 return 'número inválido'
+            }
         }
 }());
 ```
@@ -226,13 +230,16 @@ tratar as possíveis exceções antes de começar a executar o bloco condicional
 // Bom
 ;(function() {
     var getDayWeekNameOf = function getDayWeekNameOf(num) {
-            if (num < 1 || num > 7)
+            if (num < 1 || num > 7) {
                 return 'número inválido'
+            }
 
-            if (num == 1)
+            if (num == 1) {
                 return 'domingo'
-            else if (num == 2)
+            }
+            else if (num == 2) {
                 return 'segunda'
+            }
             // (...)
         }
 }());
@@ -287,7 +294,8 @@ for um requisito, utilize *polyfills* que permitam o uso das funções.
     do {
         console.log(list[index])
         index++
-    } while(index < list.length)
+    }
+    while(index < list.length)
 }());
 ```
 
