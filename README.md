@@ -54,6 +54,54 @@ a declaração de funções de outra forma dentro de uma tag. Para facilitar o d
 }());
 ```
 
+## Variáveis privadas
+Sempre inicie o nome de variáveis privadas (cujo escopo exista somente dentro de uma `function`, à exceção de `closures`) com
+*underscore* (`_`), seguido do nome em *camel case*.
+
+```javascript
+// Ruim
+;(function() {
+    var range = function() {
+        var value_ranges = [
+            {limit : 100,            range : '0 - 100'},
+            {limit : 500,            range : '101 - 500'},
+            {limit : 1000,           range : '501 - 1000'},
+            {limit : Math.MAX_VALUE, range : '1000+'}
+        ]
+
+        return function getRangeOf(value) {
+            value_ranges.forEach(function(range) {
+                if (range.limit < value) {
+                    return range.range
+                }
+            })
+        }
+    }
+}());
+```
+
+```javascript
+// Bom
+;(function() {
+    var range = function() {
+        var _valueRanges = [
+            {limit : 100,            range : '0 - 100'},
+            {limit : 500,            range : '101 - 500'},
+            {limit : 1000,           range : '501 - 1000'},
+            {limit : Math.MAX_VALUE, range : '1000+'}
+        ]
+    
+        return function getRangeOf(value) {
+            _valueRanges.forEach(function(range) {
+                if (range.limit < value) {
+                    return range.range
+                }
+            })
+        }
+    }
+}());
+```
+
 ## Identação com *tab size* 4
 A identação do código deve ser feita com `tab` de tamanho 4. Como as tags do GTM possuem limite de caracteres, essa prática
 ajuda a evitar que o código atinja tal limite.
@@ -79,8 +127,7 @@ ajuda a evitar que o código atinja tal limite.
 ```
 
 ## Ponto-e-vírgula
-Não finalize os comandos com ponto-e-vírgula. Como não são obrigatórios no JavaScript, eles acabam sendo apenas uma poluição
-visual no código, além de evitar que se atinja o limite máximo de caracteres por tag dentro do GTM.
+Não finalize os comandos com ponto-e-vírgula.
 
 ```javascript
 // Ruim
@@ -132,8 +179,7 @@ Caso o script demande mais de uma variável, separe suas declarações com vírg
 ```
 
 ## Aspas simples em *strings*
-Sempre declare strings utilizando aspa simples `('')`. Como no JavaScript não há diferenciação dela para a aspa dupla `("")`, 
-estas acabam causando um peso maior e desnecessário na leitura (por seres humanos) do código.
+Sempre declare strings utilizando aspa simples `('')`.
 
 ```javascript
 // Ruim
@@ -193,8 +239,8 @@ tratar as possíveis exceções antes de começar a executar o bloco condicional
 ```
 
 ## Chave de abertura de bloco na mesma linha da declaração
-Quando declarar um bloco (`if...else if`, `switch...case`, `for`, `while`), sempre o inicie abrindo a chave na mesma linha da
-declaração dele. Quando o bloco tiver apenas uma linha, omita as chaves
+Quando declarar um bloco (`if...else if`, `switch...case`, `for`, `while`), sempre o inicie abrindo as chaves `{}` na mesma linha da
+declaração dele. Jamais inicie outro comando na mesma linha do fechamento da chave.
 
 ```javascript
 // Ruim
@@ -215,10 +261,12 @@ declaração dele. Quando o bloco tiver apenas uma linha, omita as chaves
 ```javascript
 // Bom
 ;(function() {
-    if (num >= 4)
+    if (num >= 4) {
         return 1
-    else if (num <= 1)
+    }
+    else if (num <= 1) {
         return -1
+    }
     
     return 0
 }());
@@ -257,7 +305,7 @@ for um requisito, utilize *polyfills* que permitam o uso das funções.
 ```
 
 ```javascript
-// Ruim
+// Ok...
 ;(function() {
     var list = ['WROI', 'Lúcida']
 
@@ -332,7 +380,7 @@ javascript (atenção maior quando em strict mode).
 
 ## `$()` ao invés de `jQuery()`
 Quando fizer uso do jQuery em tags, utilize sempre a variável `$` para referenciá-lo, passando `jQuery` como parâmetro 
-da closure.
+da `closure`.
 
 ```javascript
 // Ruim
