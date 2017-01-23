@@ -1,36 +1,43 @@
 # Lúcida JavaScript code style (Google Tag Manager - GTM)
 
 ## Escopo das tags
-Para garantir que as variáveis da tag não vazem para o escopo da aplicação, utilize o pattern `closure` sempre que possível,
-salvo em casos como seletores de jQuery simples ou em tags que são apenas atribuição de eventos.
+Para garantir que as variáveis da tag não vazem para o escopo da aplicação, utilize
+o pattern `module` sempre que possível, salvo em casos como seletores de jQuery
+simples ou em tags que são apenas atribuição de eventos.
 
-```javascript
-// Ruim
-var names = ['WROI', 'Lúcida'],
-    name  = names.join(' + ')
+```html
+<!-- Ruim -->
+<script>
+var names = ['WROI', 'Lúcida']
+var name  = names.join(' + ')
 
 console.log(name) // WROI + Lúcida
+</script>
 ```
 
-```javascript
-// Bom
+```html
+<!-- Bom -->
+<script>
 ;(function() {
     var names = ['WROI', 'Lúcida'],
-        name  = names.join(' + ')
-    
+    var name  = names.join(' + ')
+
     console.log(name) // WROI + Lúcida
 }());
+</script>
 ```
 
 ## Funções aninhadas como variáveis
-Quando for necessário declarar uma função dentro de uma tag, ela deve ser atribuída a uma variável. O próprio GTM não permite
-a declaração de funções de outra forma dentro de uma tag. Para facilitar o debugging, evite o uso de funções anônimas.
+Quando for necessário declarar uma função dentro de uma tag, ela deve ser atribuída
+a uma variável. O próprio GTM não permite a declaração de funções de outra forma
+dentro de uma tag. Para facilitar o debugging, evite o uso de funções anônimas.
 
-```javascript
-// Ruim
+```html
+<!-- Ruim -->
+<script>
 ;(function() {
-    var num1 = 1,
-        num2 = 3
+    var num1 = 1
+    var num2 = 3
 
     function subtract(val1, val2) {
         return val1 - val2
@@ -38,13 +45,15 @@ a declaração de funções de outra forma dentro de uma tag. Para facilitar o d
 
     subtract(num1, num2) // -2
 }());
+</script>
 ```
 
-```javascript
-// Bom
+```html
+<!-- Bom -->
+<script>
 ;(function() {
-    var num1 = 1,
-        num2 = 3
+    var num1 = 1
+    var num2 = 3
 
     var subtract = function subtract(val1, val2) {
             return val1 - val2
@@ -52,109 +61,121 @@ a declaração de funções de outra forma dentro de uma tag. Para facilitar o d
 
     subtract(num1, num2) // -2
 }());
+</script>
 ```
 
 ## Variáveis privadas
-Sempre inicie o nome de variáveis privadas (cujo escopo exista somente dentro de uma `function`, à exceção de `closures`) com
-*underscore* (`_`), seguido do nome em *camel case*.
+Sempre inicie o nome de variáveis privadas (cujo escopo exista somente dentro de
+uma `function`, à exceção de `closures`) com *underscore* (`_`), seguido do nome
+em *camel case*.
 
-```javascript
-// Ruim
+```html
+<!-- Ruim -->
+<script>
 ;(function() {
-    var range = function() {
+    var range = function range() {
         var value_ranges = [
-            {limit : 100,            range : '0 - 100'},
-            {limit : 500,            range : '101 - 500'},
-            {limit : 1000,           range : '501 - 1000'},
-            {limit : Math.MAX_VALUE, range : '1000+'}
-        ]
+                {limit : 100,            range : '0 - 100'},
+                {limit : 500,            range : '101 - 500'},
+                {limit : 1000,           range : '501 - 1000'},
+                {limit : Math.MAX_VALUE, range : '1000+'}
+            ]
 
         return function getRangeOf(value) {
-            value_ranges.forEach(function(range) {
-                if (range.limit < value) {
-                    return range.range
-                }
-            })
+            return value_ranges.filter(function(range) {
+              range.limit < value
+            })[0]['range']
         }
     }
 }());
+</script>
 ```
 
-```javascript
-// Bom
+```html
+<!-- Bom -->
+<script>
 ;(function() {
-    var range = function() {
+    var range = function range() {
         var _valueRanges = [
-            {limit : 100,            range : '0 - 100'},
-            {limit : 500,            range : '101 - 500'},
-            {limit : 1000,           range : '501 - 1000'},
-            {limit : Math.MAX_VALUE, range : '1000+'}
-        ]
-    
+                {limit : 100,            range : '0 - 100'},
+                {limit : 500,            range : '101 - 500'},
+                {limit : 1000,           range : '501 - 1000'},
+                {limit : Math.MAX_VALUE, range : '1000+'}
+            ]
+
         return function getRangeOf(value) {
-            _valueRanges.forEach(function(range) {
-                if (range.limit < value) {
-                    return range.range
-                }
-            })
+            return _valueRanges.filter(function(range) {
+              range.limit < value
+            })[0]['range']
         }
     }
 }());
+</script>
 ```
 
 ## Identação com *tab size* 4
-A identação do código deve ser feita com `tab` de tamanho 4. Como as tags do GTM possuem limite de caracteres, essa prática
-ajuda a evitar que o código atinja tal limite.
+A identação do código deve ser feita com `tab` de tamanho 4. Como as tags do GTM
+possuem limite de caracteres, essa prática ajuda a evitar que o código atinja
+tal limite.
 
-```javascript
-// Ruim
+```html
+<!-- Ruim -->
+<script>
 ;(function() {
   var bar = gtm.bar || ''
   var foo = function() {
       // Stuff
     }
 }());
+</script>
 ```
 
-```javascript
-// Bom
+```html
+<!-- Bom -->
+<script>
 ;(function() {
     var bar = gtm.bar || ''
     var foo = function() {
             // Stuff
         }
 }());
+</script>
 ```
 
 ## Ponto-e-vírgula
 Não finalize os comandos com ponto-e-vírgula.
 
-```javascript
-// Ruim
+```html
+<!-- Ruim -->
+<script>
 ;(function() {
     var foo = '';
     var bar = function() {
             // Stuff..
         };
 }());
+</script>
 ```
 
-```javascript
-// Bom
+```html
+<!-- Bom -->
+<script>
 ;(function() {
     var foo = ''
     var bar = function() {
             // Stuff..
         }
 }());
+</script>
 ```
 
 ## Declaração de variáveis
-A declaração de variáveis deve ser feita no início do bloco de código e, de preferência, elas já devem ser inicializadas.
-Caso o script demande mais de uma variável, separe suas declarações com vírgula.
+A declaração de variáveis deve ser feita no início do bloco de código e, de
+preferência, elas já devem ser inicializadas.
 
-```javascript
-// Ruim
+```html
+<!-- Ruim -->
+<script>
 ;(function() {
     if (name.indexOf('Lúcida') > 0) {
         status = true
@@ -165,51 +186,60 @@ Caso o script demande mais de uma variável, separe suas declarações com vírg
 
     name = "WROI + Lúcida"
 }());
+</script>
 ```
 
-```javascript
-// Bom
-;(function(){
-    var name   = 'WROI + Lúcida',
-        status = false
-    
+```html
+<!-- Bom -->
+<script>
+;(function() {
+    var name   = 'WROI + Lúcida'
+    var status = false
+
     if (name.indexOf('Lúcida') > 0) {
         status = true
     }
 }());
+</script>
 ```
 
 ## Aspas simples em *strings*
 Sempre declare strings utilizando aspa simples `('')`.
 
-```javascript
-// Ruim
+```html
+<!-- Ruim -->
+<script>
 ;(function() {
-    var part1 = "WROI",
-        part2 = "Lúcida",
-        name  = part1 +  " + " + part2
-    
+    var part1 = "WROI"
+    var part2 = "Lúcida"
+    var name  = part1 +  " + " + part2
+
     console.log("Nome:", name) // Nome: WROI + Lúcida
 }());
+</script>
 ```
 
-```javascript
-// Bom
+```html
+<!-- Bom -->
+<script>
 ;(function() {
     var part1 = 'WROI',
-        part2 = 'Lúcida',
-        name  = part1 + ' + ' + part2
-    
+    var part2 = 'Lúcida',
+    var name  = part1 + ' + ' + part2
+
     console.log('Nome:', name) // Nome: WROI + Lúcida
 }());
+</script>
 ```
 
 ## `Else` e `default` case
-Evite o uso do statement `else`, quando num bloco de `if`, e o case `default`, quando num `switch...case`. Procure sempre 
-tratar as possíveis exceções antes de começar a executar o bloco condicional.
+Evite o uso do statement `else`, quando num bloco de `if`, e o case `default`,
+quando num `switch...case`. Procure sempre tratar as possíveis exceções antes de
+começar a executar o bloco condicional.
 
-```javascript
-// Ruim
+```html
+<!-- Ruim -->
+<script>
 ;(function() {
     var getDayWeekNameOf = function getDayWeekNameOf(num) {
             if (num == 1) {
@@ -224,10 +254,12 @@ tratar as possíveis exceções antes de começar a executar o bloco condicional
             }
         }
 }());
+</script>
 ```
 
-```javascript
-// Bom
+```html
+<!-- Bom -->
+<script>
 ;(function() {
     var getDayWeekNameOf = function getDayWeekNameOf(num) {
             if (num < 1 || num > 7) {
@@ -243,14 +275,17 @@ tratar as possíveis exceções antes de começar a executar o bloco condicional
             // (...)
         }
 }());
+</script>
 ```
 
 ## Chave de abertura de bloco na mesma linha da declaração
-Quando declarar um bloco (`if...else if`, `switch...case`, `for`, `while`), sempre o inicie abrindo as chaves `{}` na mesma linha da
-declaração dele. Jamais inicie outro comando na mesma linha do fechamento da chave.
+Quando declarar um bloco (`if...else if`, `switch...case`, `for`, `while`),
+sempre o inicie abrindo as chaves `{}` na mesma linha da declaração dele.
+Não inicie outro comando na mesma linha do fechamento da chave.
 
-```javascript
-// Ruim
+```html
+<!-- Ruim -->
+<script>
 ;(function() {
     if (num >= 4)
     {
@@ -263,10 +298,12 @@ declaração dele. Jamais inicie outro comando na mesma linha do fechamento da c
 
     return 0
 }());
+</script>
 ```
 
-```javascript
-// Bom
+```html
+<!-- Bom -->
+<script>
 ;(function() {
     if (num >= 4) {
         return 1
@@ -274,57 +311,67 @@ declaração dele. Jamais inicie outro comando na mesma linha do fechamento da c
     else if (num <= 1) {
         return -1
     }
-    
+
     return 0
 }());
+</script>
 ```
 
 ## `do...while()` e `while()`
-**Jamais** utilize o laço `do...while()` e evite ao máximo o uso do `while`. Priorize sempre o uso de *high order functions*
-(`forEach()`, `map()`, `filter()`, `reduce()`) ao invés das estruturas de repetição tradicionais. Como cada functor tem um uso 
-bem definido, elas facilitam o entendimento do código por seres humanos. Sempre que a compatibilidade com browsers muito antigos 
+**Jamais** utilize o laço `do...while()` e evite ao máximo o uso do `while`.
+Priorize sempre o uso de métodos nativos de coleções (`forEach()`, `map()`,
+`filter()`, `reduce()`) ao invés das estruturas de repetição tradicionais.
+Como cada functor tem um uso bem definido, elas facilitam o entendimento do
+código por seres humanos. Sempre que a compatibilidade com browsers muito antigos
 for um requisito, utilize *polyfills* que permitam o uso das funções.
 
-```javascript
-// Péssimo
+```html
+<!-- Péssimo -->
+<script>
 ;(function() {
-    var list  = ['WROI', 'Lúcida'],
-        index = 0
+    var list  = ['WROI', 'Lúcida']
+    var i     = 0
 
     do {
-        console.log(list[index])
-        index++
+        console.log(list[i])
+        i++
     }
-    while(index < list.length)
+    while(i < list.length)
 }());
+</script>
 ```
 
-```javascript
-// Ruim
-;(function {
-    var list  = ['WROI', 'Lúcida'],
-        index = 0
+```html
+<!-- Ruim -->
+<script>
+;(function() {
+    var list  = ['WROI', 'Lúcida']
+    var i     = 0
 
     while(i < list.length) {
-        console.log(list[index])
-        index++
+        console.log(list[i])
+        i++
     }
 }());
+</script>
 ```
 
-```javascript
-// Ok...
+```html
+<!-- Ok... -->
+<script>
 ;(function() {
     var list = ['WROI', 'Lúcida']
 
-    for (var index = 0; index < list.length; index++) {
-        console.log(list[index])
+    for (var i = 0; i < list.length; i++) {
+        console.log(list[i])
     }
 }());
+</script>
 ```
 
-```javascript
-// Bom
+```html
+<!-- Bom -->
+<script>
 ;(function() {
     var list = ['WROI', 'Lúcida']
 
@@ -332,14 +379,17 @@ for um requisito, utilize *polyfills* que permitam o uso das funções.
         console.log(item)
     })
 }());
+</script>
 ```
 
 ## lowerCamelCase
-Sempre declare métodos e variáveis utilizando o padrão lower camel case, à exceção de funções construtoras, que devem serguir
-o padrão upper camel case (UpperCamelCase).
+Sempre declare métodos e variáveis utilizando o padrão lower camel case, à
+exceção de funções construtoras, que devem serguir o padrão upper
+camel case (UpperCamelCase).
 
-```javascript
-// Ruim
+```html
+<!-- Ruim -->
+<script>
 ;(function() {
     var GetMultiplicationOf = function(num1, num2) {
             return num1 * num2
@@ -348,71 +398,87 @@ o padrão upper camel case (UpperCamelCase).
 
     console.log(result) // 6
 }());
+</script>
 ```
 
-```javascript
-// Bom
+```html
+<!-- Bom -->
+<script>
 ;(function() {
     var getMultiplicationOf = function(num1, num2) {
             return num1 * num2
         }
     var result = getMultiplicationOf(2,3)
-    
+
     console.log(result) // 6
 }());
+</script>
 ```
 
-## *English only*
-Sempre declare variáveis, métodos e atributos em inglês, tomando cuidado para não fazer uso de keywords reservadas pelo
-javascript (atenção maior quando em strict mode).
+## Nomenclatura em inglês, comentários em português
+Sempre declare variáveis, métodos e atributos em inglês, tomando cuidado para
+não fazer uso de keywords reservadas pelo javascript (atenção maior quando em
+strict mode). Os comentários, por sua vez, devem ser em português, visando um
+entendimento imediato.
 
-```javascript
-// Ruim
+```html
+<!-- Ruim -->
+<script>
 ;(function() {
-    var primeiroNome = 'WROI',
-        segundoNome  = 'Lúcida'
+    var primeiroNome = 'WROI'
+    var segundoNome  = 'Lúcida'
 
+    // Concat both variables and print the result
     console.log(primeiroNome + ' + ' + segundoNome) // WROI + Lúcida
-}());
+}())
+</script>
 ```
 
-```javascript
-// Bom
+```html
+<!-- Bom -->
+<script>
 ;(function() {
-    var firstName  = 'WROI',
-        secondName = 'Lúcida'
-    
+    var firstName  = 'WROI'
+    var secondName = 'Lúcida'
+
+    // Concatena as variáveis e imprime o resultado
     console.log(firstName + ' + ' + secondName) // WROI + Lúcida
 }());
+</script>
 ```
 
-## `$()` ao invés de `jQuery()`
-Quando fizer uso do jQuery em tags, utilize sempre a variável `$` para referenciá-lo, passando `jQuery` como parâmetro 
-da `closure`.
+## Injeção de dependências
+Evite ao máximo acessar recursos do escopo global. Quando necessitar de algum
+externo, injete-o como dependência do módulo.
 
-```javascript
-// Ruim
+```html
+<!-- Ruim -->
+<script>
 ;(function() {
     jQuery('#elementId').on('click', function(event) {
         // Stuff...
     })
 }());
+</script>
 ```
 
-```javascript
-// Bom
+```html
+<!-- Bom -->
+<script>
 ;(function($) {
     $('#elementId').on('click', function(event) {
         // Stuff...
     })
 }(jQuery));
+</script>
 ```
 
 ## Linhas com 80 caracteres
 Procure sempre não ultrapassar muito o limite de 80 caracteres por linha de código.
 
-```javascript
-// Lamentável
+```html
+<!-- Lamentável -->
+<script>
 ;(function() {
     var variableNameVeryVeryBigBecauseWeNeedIt = [100, 400, 300, 600, 200, 900, 1000, 700, {isTrue: true}]
 
@@ -420,10 +486,12 @@ Procure sempre não ultrapassar muito o limite de 80 caracteres por linha de có
         console.log(variableNameStillBigEnoughToDemonstration)
     })
 }());
+</script>
 ```
 
-```javascript
-// Bom
+```html
+<!-- Bom -->
+<script>
 ;(function() {
     var values = [100, 400, 300, 600]
 
@@ -431,4 +499,5 @@ Procure sempre não ultrapassar muito o limite de 80 caracteres por linha de có
         console.log(value)
     })
 }());
+</script>
 ```
